@@ -1,0 +1,1744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Night Shift</title>
+<meta name="description" content="Night Shift, presented by EDM Ohio and Nightfall. Six nights, six shifts. Pick a date and get tickets or a VIP table.">
+<meta name="theme-color" content="#0b0d10">
+<meta property="og:title" content="Night Shift">
+<meta property="og:description" content="Six nights, six shifts. Pick a date and get tickets or a VIP table.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Night Shift sign on a factory wall">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;125,900&display=swap">
+<style>
+/* Layout: a dark wall. The logo hangs on it as a paper tag; each night is its own paper slip
+   in a list beside it (below it on a phone), date on the left, the two buttons on the right. */
+:root {
+  color-scheme: dark;
+  --wall: #0d1014;
+  --wall-lit: #1a1e24;
+  --wall-deep: #030405;
+  --paper: #d0c2b6;
+  --strip: #ece8e3;
+  --ink: #161313;
+  --red: #9b0308;
+
+  --display: "Archivo", "Arial Black", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --text: "Archivo", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+
+  --gutter: 16px;
+  --swing: cubic-bezier(0.45, 0, 0.55, 1);
+  --land: cubic-bezier(0.2, 1.25, 0.35, 1);
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: inherit; }
+
+html { background: var(--wall-deep); -webkit-text-size-adjust: 100%; overflow-x: clip; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: clip;
+  color: var(--strip);
+  font: 600 1rem/1.4 var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--wall-deep);
+  background-image: url("assets/wall.webp");
+  background-size: clamp(47rem, 88vw, 96rem) auto;
+  background-position: 50% 0;
+}
+/* one tube light overhead: bright under it, falling off to black at the edges of the room */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(95% 78% at 50% -6%, rgb(255 244 214 / 0.15) 0, transparent 62%),
+    radial-gradient(120% 95% at 50% 4%, transparent 0, rgb(3 4 5 / 0.36) 50%, rgb(3 4 5 / 0.84) 100%);
+}
+.page, .toast { position: relative; z-index: 1; }
+.toast { position: fixed; }
+img { display: block; max-width: 100%; height: auto; }
+h1, h2, h3, p, ol { margin: 0; padding: 0; }
+
+.page {
+  width: 100%;
+  max-width: 74rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-block: clamp(1.25rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 2.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 4vw, 2rem);
+}
+
+/* ---------- brand side: the tag and the heading ---------- */
+.brand { display: grid; gap: clamp(1.1rem, 4vw, 1.75rem); justify-items: center; justify-self: stretch; width: 100%; min-width: 0; }
+.tag {
+  width: 100%;
+  max-width: 40rem;
+  transform: rotate(-1.2deg);
+  position: relative;
+  container-type: inline-size;
+  transform-origin: 46.8% 12.5%;                    /* the punched hole */
+  filter: drop-shadow(0.35rem 0.6rem 0.7rem rgb(0 0 0 / 0.8));
+}
+.tag__art { display: block; width: 100%; height: auto; aspect-ratio: 1826 / 1198; }
+.tag__link { display: block; }
+.tag__link:focus-visible { outline: 3px solid var(--strip); outline-offset: 6px; }
+/* the line printed on the paper under the title */
+.heading, .sub__title { position: absolute; left: 0; right: 0; top: 91.3%; translate: 0 -50%; display: grid; justify-items: center; pointer-events: none; }
+.heading img { width: 62%; height: auto; aspect-ratio: 1373 / 80; }
+
+/* ---------- the nights ---------- */
+.nights { list-style: none; display: grid; gap: 0.8rem; min-width: 0; }
+.night {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  padding: 0.5rem 0.6rem 0.8rem;
+  border-radius: 5px;
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-position: var(--px, 0) var(--py, 0), var(--py, 0) var(--px, 0);
+  background-blend-mode: multiply, normal;
+  box-shadow: 0.2rem 0.4rem 0.6rem rgb(0 0 0 / 0.7);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.3s var(--land);
+}
+.night__date { position: relative; aspect-ratio: 840 / 302; }
+.night__date img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.night__go { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; padding-inline: 5.5%; }
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 2.875rem;
+  padding: 0 0.4em;
+  border-radius: 1px;
+  color: var(--ink);
+  font: 900 clamp(0.6875rem, 3vw, 0.875rem) / 1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.14s var(--land), filter 0.14s linear, background-color 0.14s linear;
+}
+.btn--tickets {
+  color: var(--strip);
+  background-color: var(--red);
+  background-image: url("assets/red.webp");
+  background-size: 26rem auto;
+  background-position: var(--bx, 20%) var(--by, 30%);
+}
+.btn--tables {
+  border: 0.75rem solid transparent;
+  border-image: url("assets/btn-frame.webp") 58 / 0.8125rem stretch;
+  padding: 0;
+}
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (hover: hover) {
+  .night:hover { transform: rotate(0deg) translateY(-2px); }
+  .btn--tickets:hover { filter: brightness(1.16) saturate(1.05); }
+  .btn--tables:hover { background-color: rgb(22 19 19 / 0.1); }
+}
+.btn:active { transform: translateY(1px) scale(0.975); filter: brightness(0.92); }
+
+.toast {
+  position: fixed;
+  z-index: 10;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  width: max-content;
+  max-width: min(100vw - 2rem, 26rem);
+  padding: 0.8rem 1.1rem;
+  background: var(--strip);
+  color: var(--ink);
+  font: 600 0.9375rem/1.3 var(--text);
+  text-align: center;
+  text-wrap: balance;
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.65);
+  transform: translate(-50%, 180%) rotate(-1deg);
+  visibility: hidden;
+  transition: transform 0.35s var(--land), visibility 0s 0.35s;
+}
+.toast.is-on { transform: translate(-50%, 0) rotate(-1deg); visibility: visible; transition: transform 0.35s var(--land), visibility 0s; }
+
+/* ---------- tablet: date and buttons share a row ---------- */
+@media (min-width: 600px) {
+  :root { --gutter: 24px; }
+  .page { justify-items: center; }
+  .list, .sub__main { width: 100%; max-width: 40rem; }
+  .night { grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); align-items: center; gap: 0.25rem; padding: 0.45rem 0.9rem 0.45rem 0.45rem; }
+  .night__go { grid-template-columns: minmax(0, 1fr); gap: 0.45rem; padding-inline: 0; }
+  .btn { min-height: 2.75rem; font-size: 0.875rem; }
+}
+
+/* ---------- desktop: tag on the left, the list on the right ---------- */
+@media (min-width: 1000px) {
+  :root { --gutter: 40px; }
+  .page { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); column-gap: clamp(2.5rem, 5vw, 4.5rem); align-items: start; padding-block: clamp(2rem, 6vh, 4rem) 2rem; }
+  .brand { position: sticky; top: max(2rem, calc(50vh - 15rem)); gap: 2.25rem; }
+  .page.sub { min-height: 100vh; min-height: 100dvh; }      /* room for the sign to sit where it does on the dates page */
+  .list, .sub__main { max-width: none; }
+  .nights { gap: 0.7rem; }
+}
+
+
+/* ---------- labels mark what is selling out; a night that has passed is struck through ---------- */
+.night { position: relative; }
+.night__art { position: absolute; inset: 0; display: block; }
+.night__gone { align-self: center; padding-inline: 5.5%; color: var(--ink); font: 600 0.9375rem/1.3 var(--text); }
+
+.stamp {                                                    /* a label slapped on the corner of the date */
+  position: absolute;
+  right: 1.5%;
+  top: 0;
+  z-index: 2;
+  padding: 0.42em 0.7em 0.38em;
+  color: var(--strip);
+  font: 900 clamp(0.78rem, 3.7vw, 1rem) / 1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--ink);
+  box-shadow: 0.08rem 0.16rem 0.3rem rgb(0 0 0 / 0.5);
+  transform: rotate(var(--tilt, 4deg));
+}
+.stamp--low { font-size: clamp(0.62rem, 2.9vw, 0.78rem); background: var(--red) url("assets/red.webp") 30% 40% / 26rem auto; --tilt: 3deg; }
+.night.is-out .night__strip { filter: grayscale(0.55) brightness(0.93); }
+.btn.is-off { cursor: default; opacity: 0.5; filter: grayscale(0.7); }
+.night.is-past .night__art { opacity: 0.6; filter: grayscale(0.9); }
+.night.is-past .night__date::after {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 4%;
+  top: 43%;
+  height: 15%;
+  background: url("assets/strike.webp") center / 100% 100% no-repeat;
+  transform: rotate(-3.5deg);
+  pointer-events: none;
+}
+
+@media (min-width: 600px) {
+  .stamp { font-size: 0.82rem; }
+  .stamp--low { font-size: 0.68rem; }
+  .night__gone { padding-inline: 0; }
+}
+
+/* ---------- menu: a paper tab in the corner opens a punch card listing the pages ---------- */
+.menu-btn {
+  position: fixed;
+  z-index: 6;
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+  right: 0.75rem;
+  width: 3.25rem;
+  height: 3rem;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.34rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-position: 70% 20%, 30% 60%;
+  background-blend-mode: multiply, normal;
+  box-shadow: 0.15rem 0.3rem 0.5rem rgb(0 0 0 / 0.75);
+  transform: rotate(2deg);
+  transition: transform 0.2s var(--land);
+}
+.menu-btn i { display: block; width: 1.6rem; height: 0.26rem; border-radius: 1px; background: var(--ink); }
+.menu-btn i:nth-child(2) { width: 1.45rem; transform: translateX(-0.06rem) rotate(-1.5deg); }
+.menu-btn i:nth-child(3) { transform: rotate(1deg); }
+.menu-btn:focus-visible { outline: 3px solid var(--strip); outline-offset: 3px; }
+.card__close:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (hover: hover) { .menu-btn:hover { transform: rotate(-1deg) scale(1.05); } }
+.menu-btn:active { transform: scale(0.95); }
+@media (max-width: 1279px) { .page { padding-top: 4.5rem; } }
+
+.card {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(100vw - 2.5rem, 26rem);
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 3.9rem) 1.25rem calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
+  border: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  font: 600 0.9375rem/1.45 var(--text);
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-blend-mode: multiply, normal;
+  box-shadow: -0.6rem 0 2rem rgb(0 0 0 / 0.7);
+}
+.card::backdrop { background: rgb(3 4 5 / 0.72); }
+.card::before {                                           /* punched hole */
+  content: "";
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 1.1rem);
+  left: 1.3rem;
+  width: 1.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, var(--wall-deep) 0 58%, rgb(22 19 19 / 0.45) 64%, transparent 72%);
+}
+.card__close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+  right: 0.75rem;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.card__close::before, .card__close::after {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  top: calc(50% - 0.14rem);
+  height: 0.28rem;
+  border-radius: 1px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+.card__close::after { transform: rotate(-45deg); }
+.card nav { display: grid; }
+.card nav a {
+  display: flex;
+  align-items: center;
+  min-height: 4rem;
+  border-bottom: 2px dashed rgb(22 19 19 / 0.45);
+  color: var(--ink);
+  font: 900 1.75rem/1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+/* the words are printed in the same red ink as the sign; the page you're on is underlined in marker */
+.card nav a span {
+  position: relative;
+  color: var(--red);
+  background: var(--red) url("assets/red.webp") var(--rx, 30%) var(--ry, 40%) / 26rem auto;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.2s var(--land);
+}
+.card nav a:nth-child(2) span { --rx: 70%; --ry: 10%; }
+.card nav a:nth-child(3) span { --rx: 10%; --ry: 80%; }
+.card nav a[aria-current="page"] span::after {
+  content: "";
+  position: absolute;
+  left: -3%;
+  right: -3%;
+  bottom: -0.32em;
+  height: 0.3em;
+  background: url("assets/strike.webp") center / 100% 100% no-repeat;
+  transform: rotate(-1.5deg);
+}
+.card nav a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (hover: hover) { .card nav a:hover span { transform: rotate(-1.5deg) scale(1.04); } }
+/* on a phone the menu is the whole screen and the three options share all of it */
+@media (max-width: 599px) {
+  .card { width: 100%; padding-inline: 1rem; }
+  .card[open] { display: flex; flex-direction: column; }
+  .card nav { flex: 1; grid-auto-rows: 1fr; }
+  .card nav a { justify-content: center; min-height: 0; font-size: clamp(2.3rem, 11.5vw, 4.2rem); letter-spacing: 0.03em; white-space: nowrap; }
+  .card nav a:last-child { border-bottom: 0; }
+}
+
+/* ---------- FAQ and Contact pages ---------- */
+.tag { display: block; }
+.sub__main { display: grid; gap: 1.1rem; min-width: 0; }
+.sub__title {
+  color: var(--ink);
+  font: 900 5.6cqw / 1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.sheet {
+  padding: 1.1rem 1.2rem 1.25rem;
+  border-radius: 5px;
+  color: var(--ink);
+  font: 600 1rem/1.5 var(--text);
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-position: var(--px, 0) var(--py, 0), var(--py, 0) var(--px, 0);
+  background-blend-mode: multiply, normal;
+  box-shadow: 0.2rem 0.4rem 0.6rem rgb(0 0 0 / 0.7);
+  transform: rotate(var(--rot, 0deg));
+}
+.sheet h2 {
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 0.26rem solid var(--ink);
+  font: 900 1.375rem/1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.sheet p, .sheet ul { max-width: 60ch; }
+.sheet p + p { margin-top: 0.6rem; }
+.sheet ul { list-style: none; padding: 0; margin: 0; }
+.sheet h3 {
+  margin: 1.3rem 0 0.6rem;
+  font: 900 0.75rem/1.2 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rules { display: grid; gap: 0.5rem; }
+.rules li { position: relative; padding-left: 1.5rem; line-height: 1.4; }
+.rules li::before {                                      /* a red X, like a marker strike */
+  content: "";
+  position: absolute;
+  left: 0.1rem;
+  top: 0.32em;
+  width: 0.8rem;
+  height: 0.8rem;
+  background:
+    linear-gradient(45deg, transparent 42%, var(--red) 42% 58%, transparent 58%),
+    linear-gradient(-45deg, transparent 42%, var(--red) 42% 58%, transparent 58%);
+}
+.rules--ok li::before {                                  /* a check mark in black marker */
+  left: 0.2rem;
+  top: 0.18em;
+  width: 0.45rem;
+  height: 0.8rem;
+  background: none;
+  border: solid var(--ink);
+  border-width: 0 0.18rem 0.18rem 0;
+  transform: rotate(40deg);
+}
+.sheet .callout {
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  color: var(--strip);
+  font: 900 0.9rem/1.2 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--red) url("assets/red.webp") 30% 40% / 26rem auto;
+  transform: rotate(-0.6deg);
+}
+.sheet .small { margin-top: 0.9rem; font-size: 0.8125rem; opacity: 0.75; }
+.sheet details { border-bottom: 2px dashed rgb(22 19 19 / 0.45); }
+.sheet details:last-child { border-bottom: 0; }
+.sheet summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3rem;
+  padding: 0.6rem 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  cursor: pointer;
+  list-style: none;
+}
+.sheet summary::-webkit-details-marker { display: none; }
+.sheet summary::after { content: "+"; flex: none; color: var(--red); font: 900 1.5rem/1 var(--display); transition: transform 0.2s var(--land); }
+.sheet details[open] summary::after { transform: rotate(45deg); }
+.sheet summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.sheet details > p, .sheet details > ul { padding-bottom: 0.9rem; }
+.answer { display: grid; gap: 0.55rem; padding: 0 0 1rem; max-width: 60ch; }
+.answer p + p { margin-top: 0; }
+.answer .lead { margin-top: 0.35rem; }
+.answer strong { font-weight: 800; }
+.answer__link { color: var(--red); font-weight: 800; text-decoration: underline; text-underline-offset: 0.15em; overflow-wrap: anywhere; }
+.answer ul { display: grid; gap: 0.3rem; }
+.answer li { position: relative; padding-left: 1.1rem; }
+.answer li::before { content: ""; position: absolute; left: 0.1rem; top: 0.6em; width: 0.4rem; height: 0.4rem; background: var(--red); }
+.qa h2 { margin-bottom: 0.25rem; }
+.sub__back { justify-self: center; min-width: 13rem; margin-top: 0.6rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .js .menu-btn { opacity: 0; animation: stamp 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.25) 1.3s forwards; }
+  .card[open] { animation: slide 0.38s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+  .card[open]::backdrop { animation: lit 0.3s linear both; }
+  .card[open] nav a { animation: rise 0.4s var(--land) both; animation-delay: calc(0.1s + var(--i, 0) * 0.07s); }
+  .js .sub .sheet { animation: land 0.5s var(--land) calc(var(--t0, 0s) + 0.2s + var(--i, 0) * 0.09s) both; }
+  .js .sub .sub__back { animation: stamp 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.25) calc(var(--t0, 0s) + 0.7s) both; }
+}
+@keyframes slide { from { transform: translateX(104%) rotate(2.5deg); } to { transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(0.8rem); } to { opacity: 1; transform: none; } }
+
+
+/* ---------- text alerts popup ----------
+   One left edge for everything: title, copy, labels, fields, button, fine print.
+   Spacing steps: 0.4 between a label and its field, 1 between groups, 1.5 between sections. */
+.signup {
+  --pad: 1.5rem;
+  width: min(100vw - 2rem, 24.5rem);
+  max-width: none;
+  margin: auto;
+  padding: 3.4rem var(--pad) var(--pad);
+  border: 0;
+  border-radius: 0.45rem;
+  overflow: visible;
+  color: var(--ink);
+  text-align: left;
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-position: 40% 70%, 20% 30%;
+  background-blend-mode: multiply, normal;
+  box-shadow: 0.4rem 0.8rem 2rem rgb(0 0 0 / 0.8);
+}
+.signup:focus { outline: none; }
+.signup::backdrop { background: rgb(3 4 5 / 0.72); }
+.signup::before {                                         /* punched hole, top left like the menu card */
+  content: "";
+  position: absolute;
+  top: 1.15rem;
+  left: var(--pad);
+  width: 1.3rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, var(--wall-deep) 0 58%, rgb(22 19 19 / 0.45) 64%, transparent 72%);
+}
+.signup__x {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.signup__x::before, .signup__x::after {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  top: calc(50% - 0.11rem);
+  height: 0.22rem;
+  border-radius: 1px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+.signup__x::after { transform: rotate(-45deg); }
+.signup__x:focus-visible { outline: 3px solid var(--ink); outline-offset: -2px; }
+
+.signup__title {
+  padding-bottom: 0.75rem;
+  border-bottom: 0.22rem solid var(--ink);
+  font: 900 1.6rem/1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.signup__title:focus { outline: none; }
+.signup__title--done { color: var(--red); border-bottom-color: var(--red); }
+.signup__text { margin: 0.9rem 0 1.5rem; font: 600 1rem/1.45 var(--text); text-wrap: pretty; }
+
+.signup__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font: 900 0.6875rem/1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.signup__input, .signup__field {
+  height: 3rem;
+  border: 0.15rem solid var(--ink);
+  border-radius: 2px;
+  background: rgb(255 252 246 / 0.6);
+}
+.signup__input {
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0 0.85rem;
+  color: var(--ink);
+  font: 700 1.0625rem/1 var(--text);
+  outline: none;
+}
+.signup__field { display: grid; grid-template-columns: 5.6rem minmax(0, 1fr); }
+.signup__field select, .signup__field input {
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  font: 700 1.0625rem/1 var(--text);
+  outline: none;
+}
+.signup__field select {
+  padding: 0 1.5rem 0 0.85rem;
+  border-right: 0.15rem solid var(--ink);
+  appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23161313'/%3E%3C/svg%3E") right 0.6rem center / 0.6rem auto no-repeat;
+  cursor: pointer;
+}
+.signup__field input { padding: 0 0.85rem; }
+.signup__input::placeholder, .signup__field input::placeholder { color: rgb(22 19 19 / 0.45); font-weight: 600; }
+.signup__input:focus, .signup__field:focus-within { box-shadow: 0 0 0 3px rgb(155 3 8 / 0.3); }
+.signup__input.is-bad, .signup__field.is-bad { border-color: var(--red); }
+.signup__error { margin-top: 0.45rem; color: var(--red); font: 700 0.8125rem/1.3 var(--text); }
+.signup__input + .signup__error { margin: -0.55rem 0 1rem; }
+.contact { margin-top: 1.4rem; }
+.contact__intro { text-wrap: pretty; }
+.contact__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 0.75rem; }
+.contact__select {
+  padding-right: 2rem;
+  appearance: none;
+  background: rgb(255 252 246 / 0.6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23161313'/%3E%3C/svg%3E") right 0.75rem center / 0.6rem auto no-repeat;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.contact__msg { height: auto; min-height: 9rem; padding: 0.8rem 0.85rem; line-height: 1.45; resize: vertical; }
+.contact__msg + .signup__error { margin: -0.55rem 0 1rem; }
+.contact .signup__go { margin-top: 0.5rem; }
+.contact .signup__fine a, .contact__sent a { color: var(--red); font-weight: 800; text-decoration: underline; text-underline-offset: 0.15em; overflow-wrap: anywhere; }
+.contact__sent { margin-top: 0.7rem; font: 700 0.875rem/1.45 var(--text); }
+@media (max-width: 420px) { .contact__row { grid-template-columns: minmax(0, 1fr); } }
+.signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.signup__go { width: 100%; min-height: 3.125rem; border: 0; font-size: 0.875rem; }
+.signup__go.btn--tables { border: 0.75rem solid transparent; }
+.signup__go[disabled] { cursor: progress; filter: grayscale(0.4) brightness(0.9); }
+.signup__form .signup__go { margin-top: 1.5rem; }
+.signup__fine { margin-top: 0.9rem; font: 600 0.75rem/1.45 var(--text); opacity: 0.7; text-wrap: pretty; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .signup[open] { animation: drop-in 0.5s var(--land) both; }
+  .signup[open]::backdrop { animation: lit 0.3s linear both; }
+  .signup__done:not([hidden]) .signup__title { animation: thump 0.22s cubic-bezier(0.3, 0, 0.2, 1) both; }
+}
+@keyframes drop-in {
+  0%   { opacity: 0; transform: translateY(-2.5rem) rotate(-3deg) scale(1.03); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: rotate(-0.4deg); }
+}
+.signup[open] { transform: rotate(-0.4deg); }
+@media (max-width: 359px) {
+  .signup { --pad: 1.1rem; }
+  .signup__title { font-size: 1.4rem; }
+  .signup__field { grid-template-columns: 5rem minmax(0, 1fr); }
+  .signup__field select { padding-left: 0.6rem; }
+  .signup__field input, .signup__input { padding-inline: 0.65rem; font-size: 1rem; }
+}
+
+/* ---------- clock in: first visit opens on the time clock ----------
+   The tube light flickers on over the visitor's own time, a CLOCKED IN stamp
+   lands on it, and the room's lights strike on. One idea, held long enough to read. */
+.clockin { display: none; }
+.intro-on .clockin {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  background:
+    radial-gradient(70% 55% at 50% 0, rgb(255 244 214 / 0.12), transparent 70%),
+    linear-gradient(rgb(3 4 5 / 0.84), rgb(3 4 5 / 0.95)),
+    url("assets/wall.webp") 50% 0 / clamp(47rem, 88vw, 96rem) auto,
+    var(--wall-deep);
+}
+.intro .page, .intro .page *, .intro .menu-btn, .intro .lights { animation: none !important; }
+.intro .lights { opacity: 1; }
+.clockin__tube {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(62vw, 30rem);
+  height: 0.3rem;
+  translate: -50% 0;
+  background: #f4efe4;
+  box-shadow: 0 0 0.6rem rgb(255 244 214 / 0.9), 0 0 3rem 0.6rem rgb(255 244 214 / 0.35);
+}
+.clockin__clock { position: relative; display: grid; width: max-content; gap: 0.7rem; }
+.clockin__time small { margin-left: 0.14em; font-size: 0.34em; letter-spacing: 0.04em; }
+.clockin__date {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid rgb(208 194 182 / 0.35);
+  color: var(--paper);
+  font: 900 clamp(0.8rem, 3.4vw, 1.05rem) / 1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.clockin__time {
+  color: #ff2d22;
+  font: 900 clamp(3.4rem, 17vw, 8rem) / 0.95 var(--display);
+  font-stretch: 125%;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-shadow: 0 0 0.35em rgb(255 45 34 / 0.35);
+}
+.clockin__stamp {
+  margin-top: 0.1rem;
+  padding: 0.55em 0 0.5em;
+  text-align: center;
+  color: var(--ink);
+  font: 900 clamp(1.15rem, 5.6vw, 2.1rem) / 1 var(--display);
+  font-stretch: 125%;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background-color: var(--paper);
+  background-image: url("assets/mottle.jpg"), url("assets/paper-a-1000.webp");
+  background-size: 34rem 25rem, 42rem auto;
+  background-position: 30% 40%, 60% 20%;
+  background-blend-mode: multiply, normal;
+  box-shadow: 0.25rem 0.5rem 0.9rem rgb(0 0 0 / 0.8);
+  opacity: 0;
+}
+.clockin__date, .clockin__time { opacity: 0; }
+
+.intro-on .clockin__tube { animation: tube 0.55s step-end both; }
+.intro-on .clockin__date { animation: lit 0.4s linear 0.45s forwards; }
+.intro-on .clockin__time { animation: catch 0.5s step-end 0.3s forwards; }
+.clockin.is-punch .clockin__stamp { animation: slam 0.22s cubic-bezier(0.3, 0, 0.2, 1) forwards; }
+.clockin.is-punch .clockin__clock { animation: jolt 0.3s ease-out 0.16s; }
+.clockin.is-out { animation: unlit 0.45s ease-in both; pointer-events: none; }
+.clockin.is-out .clockin__stamp, .clockin.is-out .clockin__date, .clockin.is-out .clockin__time { opacity: 1; }
+
+@keyframes tube {
+  0% { opacity: 0; } 18% { opacity: 1; } 26% { opacity: 0.1; } 34% { opacity: 1; } 52% { opacity: 0.25; } 60% { opacity: 1; } 100% { opacity: 1; }
+}
+@keyframes catch { 0% { opacity: 0; } 20% { opacity: 1; } 32% { opacity: 0.15; } 46% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes slam {
+  0%   { opacity: 0; transform: scale(1.6); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes jolt { 0%, 100% { transform: none; } 30% { transform: translate(0.25rem, 0.3rem); } 60% { transform: translate(-0.15rem, -0.1rem); } }
+@keyframes unlit { from { opacity: 1; } to { opacity: 0; } }
+
+/* ---------- motion ----------
+   Lights strike on like a tube catching, the tag swings on its hole (and again whenever the page
+   is scrolled or the tag is poked), each slip lands as it comes into view, its date is slapped on
+   and its buttons are stamped. All of it is off for people who ask for reduced motion. */
+.lights { position: fixed; inset: 0; z-index: 20; background: #000; opacity: 0; pointer-events: none; }
+.btn--tickets { position: relative; overflow: hidden; }
+.btn--tickets::after {
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% 0;
+  width: 38%;
+  background: linear-gradient(100deg, transparent 0, rgb(255 236 226 / 0.34) 48%, transparent 100%);
+  transform: translateX(-130%) skewX(-12deg);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lights { animation: strike 1.15s step-end both; }
+  html:not(.js) .tag { animation: hang 1.9s var(--swing) both; }
+  html:not(.js) .night { animation: land 0.5s var(--land) both; animation-delay: calc(0.9s + var(--i, 0) * 0.08s); }
+
+  .js .tag { animation: lit 0.35s linear calc(var(--t0, 0s) * 0.55) both; cursor: grab; }
+  .js .night, .js .night .night__strip, .js .night .btn, .js .night .stamp { opacity: 0; }
+  .js .night.is-in .stamp { animation: thump 0.2s cubic-bezier(0.3, 0, 0.2, 1) calc(var(--d, 0s) + 0.85s) forwards; }
+  .js .night.is-in { animation: land 0.5s var(--land) var(--d, 0s) forwards; }
+  .js .night.is-in .night__strip { animation: slap 0.4s var(--land) calc(var(--d, 0s) + 0.22s) forwards; }
+  .js .night.is-in .btn { animation: stamp 0.24s cubic-bezier(0.2, 0.9, 0.3, 1.25) calc(var(--d, 0s) + 0.42s) forwards; }
+  .js .night.is-in .btn--tables { animation-delay: calc(var(--d, 0s) + 0.5s); }
+  .js .night.is-in .btn--tickets::after { animation: glint 0.8s ease-out calc(var(--d, 0s) + 0.75s) 1; }
+  .btn--tickets:hover::after { animation: glint 0.7s ease-out 1; }
+  .lights.is-blink { animation: blink 0.32s step-end 1; }
+}
+@keyframes strike {
+  0% { opacity: 1; } 9% { opacity: 0.3; } 13% { opacity: 0.96; } 24% { opacity: 0.92; } 28% { opacity: 0.15; }
+  33% { opacity: 0.75; } 40% { opacity: 0.7; } 45% { opacity: 0.06; } 51% { opacity: 0.38; } 57% { opacity: 0; } 100% { opacity: 0; }
+}
+@keyframes blink { 0% { opacity: 0.14; } 22% { opacity: 0; } 48% { opacity: 0.09; } 70% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes lit { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hang {
+  0%   { opacity: 0; transform: translateY(-4%) rotate(-5deg); }
+  10%  { opacity: 1; }
+  30%  { transform: rotate(0.9deg); }
+  50%  { transform: rotate(-2.2deg); }
+  68%  { transform: rotate(-0.7deg); }
+  84%  { transform: rotate(-1.4deg); }
+  100% { transform: rotate(-1.2deg); }
+}
+@keyframes land {
+  0%   { opacity: 0; transform: translateY(1.4rem) rotate(calc(var(--rot, 0deg) * -5)) scale(1.04); }
+  55%  { opacity: 1; }
+  100% { opacity: 1; transform: rotate(var(--rot, 0deg)); }
+}
+@keyframes slap {
+  0%   { opacity: 0; transform: translateY(-14%) rotate(calc(var(--rot, 0deg) * 6)) scale(1.16); }
+  45%  { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes stamp {
+  0%   { opacity: 0; transform: scale(1.32) rotate(-2deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes thump { from { opacity: 0; scale: 1.9; } to { opacity: 1; scale: 1; } }
+@keyframes glint { from { transform: translateX(-130%) skewX(-12deg); } to { transform: translateX(330%) skewX(-12deg); } }
+</style>
+</head>
+<body>
+<script>
+(function () {
+  var root = document.documentElement, seen = false;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  root.classList.add("js");
+  try { seen = sessionStorage.getItem("ns-clocked-in") === "1"; sessionStorage.setItem("ns-clocked-in", "1"); } catch (e) {}
+  if (!seen) root.classList.add("intro", "intro-on");
+})();
+// run fn once the clock-in intro is out of the way
+window.nsReady = function (fn) {
+  if (!document.documentElement.classList.contains("intro")) fn();
+  else document.addEventListener("ns:intro-done", fn, { once: true });
+};
+</script>
+<div class="clockin" id="clockin" aria-hidden="true">
+  <i class="clockin__tube"></i>
+  <div class="clockin__clock">
+    <p class="clockin__date"></p>
+    <p class="clockin__time"></p>
+    <p class="clockin__stamp">Clocked in</p>
+  </div>
+</div>
+<div class="lights" id="lights" aria-hidden="true"></div>
+
+<main class="page" id="view-home">
+  <header class="brand">
+    <div class="tag">
+      <h1><img class="tag__art" src="assets/hero-1000.webp" srcset="assets/hero-1000.webp 1000w, assets/hero.webp 1826w"
+           sizes="(min-width: 1000px) 38rem, min(100vw - 32px, 40rem)"
+           width="1826" height="1198" fetchpriority="high" decoding="async"
+           alt="Night Shift. EDM Ohio + Nightfall present."></h1>
+      <h2 class="heading"><img src="assets/upcoming.webp" alt="Upcoming dates" width="1373" height="80" decoding="async"></h2>
+    </div>
+  </header>
+
+  <section class="list" aria-label="Dates">
+    <ol class="nights">
+        <li class="night" data-date="2026-10-30" style="--i:0; --rot:-0.45deg; --px:4%; --py:12%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-1.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-1.webp" alt="Friday, October 30th" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:8%; --by:20%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+        <li class="night" data-date="2026-10-31" style="--i:1; --rot:0.35deg; --px:61%; --py:70%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-2.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-2.webp" alt="Saturday, October 31st" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:62%; --by:70%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+        <li class="night" data-date="2026-11-20" style="--i:2; --rot:-0.25deg; --px:33%; --py:38%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-3.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-3.webp" alt="Friday, November 20th" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:34%; --by:90%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+        <li class="night" data-date="2026-11-25" style="--i:3; --rot:0.5deg; --px:88%; --py:5%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-4.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-4.webp" alt="Wednesday, November 25th" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:88%; --by:10%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+        <li class="night" data-date="2026-12-04" style="--i:4; --rot:-0.4deg; --px:17%; --py:84%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-5.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-5.webp" alt="Friday, December 4th" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:48%; --by:50%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+        <li class="night" data-date="2026-12-12" style="--i:5; --rot:0.3deg; --px:72%; --py:51%">
+          <h3 class="night__date">
+            <span class="night__art">
+              <img src="assets/frame-6.webp" alt="" width="840" height="302" decoding="async">
+              <img class="night__strip" src="assets/strip-6.webp" alt="Saturday, December 12th" width="840" height="302" decoding="async">
+            </span>
+          </h3>
+          <div class="night__go">
+            <a class="btn btn--tickets" style="--bx:20%; --by:0%">Tickets</a>
+            <a class="btn btn--tables">VIP tables</a>
+          </div>
+        </li>
+    </ol>
+  </section>
+</main>
+
+<dialog class="signup" id="signup" aria-labelledby="signup-title" tabindex="-1">
+  <button type="button" class="signup__x" id="signup-x" aria-label="Close"></button>
+
+  <form class="signup__form" id="signup-form" novalidate>
+    <h2 class="signup__title" id="signup-title">Don't miss a shift</h2>
+    <p class="signup__text">Get a text when Night Shift lineups and tickets drop.</p>
+
+    <label class="signup__label" for="signup-name">Name</label>
+    <input class="signup__input" id="signup-name" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required placeholder="First and last name">
+
+    <label class="signup__label" for="signup-phone">Phone number</label>
+    <div class="signup__field">
+      <select id="signup-cc" aria-label="Country code">
+        <option value="1" selected>US +1</option>
+        <option value="1">CA +1</option>
+        <option value="44">UK +44</option>
+        <option value="52">MX +52</option>
+        <option value="61">AU +61</option>
+        <option value="49">DE +49</option>
+        <option value="33">FR +33</option>
+      </select>
+      <input id="signup-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" required aria-describedby="signup-error">
+    </div>
+    <p class="signup__error" id="signup-error" role="alert" hidden></p>
+    <input class="signup__trap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <button type="submit" class="btn btn--tickets signup__go" id="signup-go">Get texts</button>
+    <p class="signup__fine">By signing up you agree to get texts about upcoming events from Nightfall Presents. Msg and data rates may apply. Reply STOP to opt out.</p>
+  </form>
+
+  <div class="signup__done" id="signup-done" hidden>
+    <h2 class="signup__title signup__title--done" tabindex="-1">You're clocked in</h2>
+    <p class="signup__text">We'll text you when lineups and tickets drop.</p>
+    <button type="button" class="btn btn--tables signup__go" id="signup-back">Back to the dates</button>
+  </div>
+
+  <div class="signup__done" id="signup-handoff" hidden>
+    <h2 class="signup__title" tabindex="-1">One more step</h2>
+    <p class="signup__text">Finish signing up on our text signup page.</p>
+    <a class="btn btn--tickets signup__go" id="signup-handoff-go" target="_blank" rel="noopener">Open signup page</a>
+  </div>
+</dialog>
+
+<button type="button" class="menu-btn" id="menu-btn" aria-label="Menu" aria-haspopup="dialog" aria-controls="menu"><i></i><i></i><i></i></button>
+
+<main class="page sub" id="view-faq" hidden>
+  <header class="brand">
+    <div class="tag">
+      <a class="tag__link" href="#" aria-label="Night Shift. Back to the dates."><img class="tag__art" src="assets/hero-1000.webp" srcset="assets/hero-1000.webp 1000w, assets/hero.webp 1826w"
+           sizes="(min-width: 1000px) 38rem, min(100vw - 32px, 40rem)"
+           width="1826" height="1198" decoding="async" alt=""></a>
+      <h1 class="sub__title">FAQ</h1>
+    </div>
+  </header>
+
+  <div class="sub__main">
+
+  <section class="sheet" style="--i:0; --rot:-0.35deg; --px:12%; --py:40%">
+    <h2>Dress code &amp; entry policy</h2>
+    <p>To maintain a safe, comfortable, and elevated nightlife experience, all guests are expected to arrive appropriately dressed and conduct themselves respectfully.</p>
+
+    <h3>Not allowed during night events</h3>
+    <ul class="rules">
+      <li>Sweatpants, joggers, or gym shorts</li>
+      <li>Work boots or steel-toe footwear</li>
+      <li>Clothing displaying offensive, threatening, or inappropriate graphics or messaging</li>
+      <li>Excessive chains, spikes, or accessories presenting safety concerns</li>
+      <li>Ski masks, balaclavas, or identity-concealing face coverings, except for religious purposes and applicable accommodations</li>
+      <li>Clothing or accessories that interfere with security screening</li>
+      <li>Excessively dirty or soiled clothing</li>
+    </ul>
+
+    <h3>Additional entry policies</h3>
+    <p>Management reserves the right to deny entry or remove guests for dress code violations, disruptive behavior, excessive intoxication, safety concerns, or failure to comply with venue policies.</p>
+    <p>Aggressive conduct, harassment, threats, fighting, and disrespect toward staff or other guests will not be tolerated.</p>
+    <p>Dress code requirements may vary depending on the event, artist, or venue programming. Guests are encouraged to arrive in attire appropriate for an elevated nightlife environment.</p>
+    <p class="callout">When in doubt, dress to impress.</p>
+    <p class="small">All entry and removal decisions are made by venue management and security in accordance with applicable law. Policies are enforced consistently and without discrimination.</p>
+  </section>
+
+  <section class="sheet" style="--i:1; --rot:0.3deg; --px:64%; --py:8%">
+    <h2>Bag policy</h2>
+    <p>To ensure a safe and efficient entry experience, all guests must comply with the following bag policy.</p>
+
+    <h3>Permitted bags</h3>
+    <ul class="rules rules--ok">
+      <li>Small purses, handbags, and clutches</li>
+      <li>Small crossbody bags and fanny packs</li>
+      <li>Bags no larger than 12" &times; 6" &times; 12"</li>
+    </ul>
+
+    <h3>Prohibited bags</h3>
+    <ul class="rules">
+      <li>Backpacks and large bookbags</li>
+      <li>Duffel bags, luggage, and oversized totes</li>
+      <li>Large purses or bags exceeding the permitted dimensions</li>
+      <li>Bags containing prohibited or hazardous items</li>
+      <li>Any bag that cannot be properly inspected by security</li>
+    </ul>
+  </section>
+
+  <section class="sheet qa" style="--i:2; --rot:-0.2deg; --px:38%; --py:76%">
+    <h2>General Information</h2>
+    <details>
+      <summary>What is the age requirement?</summary>
+      <div class="answer">
+        <p>All Night Shift events are <strong>18+</strong>. You must be at least 18 years old to attend.</p>
+        <p>Guests must present valid identification upon entry. Guests 21 and older must provide acceptable identification to purchase or consume alcohol.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Do I need an ID?</summary>
+      <div class="answer">
+        <p>Yes. <strong>All guests must present valid identification to enter, regardless of age.</strong></p>
+        <p>We accept:</p>
+        <ul><li>Driver's licenses</li><li>State-issued IDs</li><li>Passports</li><li>Apple Wallet digital IDs, where supported by our ID verification system</li></ul>
+        <p class="lead"><strong>Don't have your physical ID?</strong></p>
+        <p>A photograph or screenshot of your ID may be accepted on a case-by-case basis, subject to management approval and applicable law.</p>
+        <p>Acceptance is not guaranteed. Security may request additional verification or deny entry if your identity or age cannot be verified.</p>
+        <p><strong>We strongly recommend bringing your physical ID to avoid issues at the door.</strong></p>
+        <p>Photographs and screenshots may not satisfy identification requirements for purchasing alcohol.</p>
+      </div>
+    </details>
+    <details>
+      <summary>What time do doors open?</summary>
+      <div class="answer">
+        <p>Door times vary by event and are listed on the event's Posh ticket page. We recommend arriving early to avoid long lines.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I leave and come back?</summary>
+      <div class="answer">
+        <p>Re-entry policies may vary by event. Please check with security before leaving the venue.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="sheet qa" style="--i:3; --rot:0.3deg; --px:70%; --py:20%">
+    <h2>Tickets &amp; Admission</h2>
+    <details>
+      <summary>What are ticket tiers?</summary>
+      <div class="answer">
+        <p>Ticket tiers are simply different prices for <strong>the exact same General Admission ticket.</strong></p>
+        <p>Here's how it works:</p>
+        <ul><li><strong>Early Bird:</strong> The cheapest tickets. These go on sale first, and only a limited number are available.</li><li><strong>General Admission (GA):</strong> Regular-priced tickets available after Early Bird tickets sell out.</li><li><strong>Final Release / Last Minute:</strong> The most expensive tickets, usually available closer to the event or after the cheaper tiers sell out.</li></ul>
+        <p><strong>For example:</strong></p>
+        <ul><li>Early Bird — $15</li><li>General Admission — $20</li><li>Final Release — $25</li></ul>
+        <p><strong>All three tickets get you into the exact same event with the exact same access.</strong></p>
+        <p>Someone who purchases an Early Bird ticket for $15 gets the same General Admission experience as someone who pays $25 for Final Release.</p>
+        <p><strong>The only difference is the price. Buy early and save money.</strong></p>
+        <p>VIP tickets, when offered, are separate and may include additional benefits.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Why did ticket prices increase?</summary>
+      <div class="answer">
+        <p>Because the cheaper ticket tier sold out!</p>
+        <p>As each tier sells out, the next tier becomes available at a higher price. The earlier you purchase, the cheaper your ticket usually is.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Where can I purchase tickets?</summary>
+      <div class="answer">
+        <p>All official Night Shift tickets are sold through <strong>Posh</strong>.</p>
+        <p>We strongly recommend purchasing tickets through our official event pages to avoid scams or invalid tickets.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I buy tickets at the door?</summary>
+      <div class="answer">
+        <p>Door tickets may be available if the event has not sold out.</p>
+        <p><strong>Advance purchase is strongly recommended.</strong> Door admission is not guaranteed and may cost more.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Are tickets refundable?</summary>
+      <div class="answer">
+        <p>All ticket sales are generally final.</p>
+        <p>Refunds are not provided for changes in personal plans, missed performances, late arrivals, or entry denied due to violations of event policies.</p>
+        <p>Canceled or rescheduled events are handled according to Posh's policies and applicable law.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I transfer my ticket to someone else?</summary>
+      <div class="answer">
+        <p><strong>Yes!</strong> If you can no longer attend, you can give your ticket to someone else.</p>
+        <p>All Night Shift tickets are issued through Posh. You can share or transfer your ticket to another person, but each ticket can only be scanned and used once.</p>
+        <p>The person receiving your ticket must still meet the event's 18+ age requirement and all entry policies.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Do I need to print my ticket?</summary>
+      <div class="answer">
+        <p>No! Simply have your digital Posh ticket ready on your phone when you arrive.</p>
+        <p>Make sure your phone is charged and your ticket is accessible before reaching the entrance.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Does purchasing a ticket guarantee entry?</summary>
+      <div class="answer">
+        <p>A valid ticket provides admission as long as you meet the age requirements, present acceptable identification, comply with event policies, and pass security screening.</p>
+        <p>Admission remains subject to venue capacity and applicable law.</p>
+      </div>
+    </details>
+    <details>
+      <summary>What happens if an event sells out?</summary>
+      <div class="answer">
+        <p>Once an event sells out, additional tickets are not guaranteed.</p>
+        <p>Any additional ticket releases will be announced through our official channels.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="sheet qa" style="--i:4; --rot:-0.15deg; --px:45%; --py:10%">
+    <h2>Entry &amp; Security</h2>
+    <details>
+      <summary>Will I be searched when I enter?</summary>
+      <div class="answer">
+        <p>Yes. All guests are subject to security screening, which may include metal detectors, bag inspections, and other safety procedures.</p>
+        <p>Guests who refuse required security screening may be denied entry.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I bring outside food or drinks?</summary>
+      <div class="answer">
+        <p>Outside food and beverages are generally not permitted.</p>
+        <p>Exceptions may be made for medically necessary items and other required accommodations.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I be denied entry or removed?</summary>
+      <div class="answer">
+        <p>Yes. Management and security may deny entry or remove guests for:</p>
+        <ul><li>Excessive intoxication or impairment</li><li>Fighting, threats, or aggressive behavior</li><li>Harassment or unwanted physical contact</li><li>Failure to comply with security screening</li><li>Violations of event or venue policies</li><li>Behavior that threatens the safety of guests or staff</li></ul>
+        <p>Guests removed for violating event policies are generally not eligible for refunds, subject to applicable law.</p>
+      </div>
+    </details>
+    <details>
+      <summary>What should I do if I feel unsafe?</summary>
+      <div class="answer">
+        <p>Immediately notify a security guard or member of our staff.</p>
+        <p>Night Shift takes all reports of harassment, threatening behavior, and safety concerns seriously.</p>
+        <p>Our priority is maintaining a safe and enjoyable environment for everyone.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="sheet qa" style="--i:5; --rot:-0.2deg; --px:38%; --py:76%">
+    <h2>Event Experience</h2>
+    <details>
+      <summary>When will set times be announced?</summary>
+      <div class="answer">
+        <p>Set times are typically announced through our official social media channels before the event.</p>
+        <p>Some events may not release set times until the day of the show. All schedules are subject to change.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I take photos or videos?</summary>
+      <div class="answer">
+        <p>Personal photography and video recording using mobile phones are generally permitted unless otherwise stated.</p>
+        <p>Some events may enforce specific no-phone or no-recording policies. Please respect the rules for each event.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I bring professional camera or video equipment?</summary>
+      <div class="answer">
+        <p>Professional photography and videography equipment is <strong>strictly prohibited without a pre-approved media pass and a valid Certificate of Insurance (COI).</strong></p>
+        <p>If you're interested in photographing or filming a Night Shift event, please contact our team in advance to request media credentials and submit the required documentation.</p>
+        <p><strong>Showing up with professional camera equipment without prior approval will result in your equipment being denied entry.</strong></p>
+        <p>Media passes must be approved before the event. Approval is not guaranteed, and all media personnel must follow Night Shift's photography, videography, and event policies.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Is there a coat check?</summary>
+      <div class="answer">
+        <p>Coat check availability varies by event and venue.</p>
+        <p>Please refer to the event information or ask staff upon arrival.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Will alcohol be available?</summary>
+      <div class="answer">
+        <p>Alcohol availability depends on the venue and applicable licensing.</p>
+        <p>Guests must be <strong>21 or older</strong> and provide legally acceptable identification to purchase or consume alcoholic beverages.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Can I upgrade to VIP?</summary>
+      <div class="answer">
+        <p>VIP upgrades may be available at select events, subject to availability.</p>
+        <p>If VIP admission is offered, the details will be listed on the event's Posh ticket page.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Are events accessible?</summary>
+      <div class="answer">
+        <p>Accessibility features vary by venue.</p>
+        <p>If you require accessibility accommodations, please contact us ahead of time so our team can help coordinate your visit.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="sheet qa" style="--i:6; --rot:0.3deg; --px:70%; --py:20%">
+    <h2>Contact &amp; Support</h2>
+    <details>
+      <summary>I lost something at an event. What should I do?</summary>
+      <div class="answer">
+        <p>Please contact the venue or Night Shift with a description of your missing item and the date of the event.</p>
+        <p>We will do our best to assist but cannot guarantee the recovery of lost belongings.</p>
+      </div>
+    </details>
+    <details>
+      <summary>I can't find my tickets. What should I do?</summary>
+      <div class="answer">
+        <p>All Night Shift tickets are issued through <strong>Posh</strong>.</p>
+        <p>Check your email inbox and spam folder for your ticket confirmation, or log into your Posh account to access your tickets.</p>
+        <p>If you're still unable to locate them, please contact Posh support for assistance.</p>
+      </div>
+    </details>
+    <details>
+      <summary>I accidentally purchased tickets for the wrong event. What should I do?</summary>
+      <div class="answer">
+        <p>All ticket sales are generally final.</p>
+        <p>If you purchased a ticket for the wrong event, contact Posh support to see whether any options are available.</p>
+        <p>Ticket exchanges and refunds are not guaranteed.</p>
+      </div>
+    </details>
+    <details>
+      <summary>How do I contact Night Shift?</summary>
+      <div class="answer">
+        <p>For general inquiries, ticket questions, media requests, accessibility accommodations, or event-related concerns, please reach out through our official website or social media channels.</p><p>Email <a class="answer__link" href="mailto:contact@nightfallpresents.com">contact@nightfallpresents.com</a> or use the <a class="answer__link" href="#contact">contact form</a>.</p>
+      </div>
+    </details>
+  </section>
+
+  <a class="btn btn--tickets sub__back" href="#">See the dates</a>
+  </div>
+</main>
+
+<main class="page sub" id="view-contact" hidden>
+  <header class="brand">
+    <div class="tag">
+      <a class="tag__link" href="#" aria-label="Night Shift. Back to the dates."><img class="tag__art" src="assets/hero-1000.webp" srcset="assets/hero-1000.webp 1000w, assets/hero.webp 1826w"
+           sizes="(min-width: 1000px) 38rem, min(100vw - 32px, 40rem)"
+           width="1826" height="1198" decoding="async" alt=""></a>
+      <h1 class="sub__title">Contact</h1>
+    </div>
+  </header>
+
+  <div class="sub__main">
+
+  <section class="sheet" style="--i:0; --rot:-0.3deg; --px:52%; --py:30%">
+    <h2>Get in touch</h2>
+    <p class="contact__intro">Questions about tickets, VIP tables, media passes or anything else? Send us a message and the team will get back to you.</p>
+
+    <form class="contact" id="contact-form" novalidate>
+      <label class="signup__label" for="contact-name">Name</label>
+      <input class="signup__input" id="contact-name" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required placeholder="First and last name">
+
+      <div class="contact__row">
+        <div>
+          <label class="signup__label" for="contact-topic">Topic</label>
+          <select class="signup__input contact__select" id="contact-topic" name="topic">
+            <option>General question</option>
+            <option>Tickets</option>
+            <option>VIP tables</option>
+            <option>Media pass</option>
+            <option>Accessibility</option>
+            <option>Lost and found</option>
+            <option>Booking and partnerships</option>
+          </select>
+        </div>
+        <div>
+          <label class="signup__label" for="contact-night">Night</label>
+          <select class="signup__input contact__select" id="contact-night" name="night">
+            <option value="">Not a specific night</option>
+            <option>Fri Oct 30</option>
+            <option>Sat Oct 31</option>
+            <option>Fri Nov 20</option>
+            <option>Wed Nov 25</option>
+            <option>Fri Dec 4</option>
+            <option>Sat Dec 12</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="signup__label" for="contact-msg">Message</label>
+      <textarea class="signup__input contact__msg" id="contact-msg" name="message" rows="6" maxlength="2000" required placeholder="What can we help with?"></textarea>
+      <p class="signup__error" id="contact-error" role="alert" hidden></p>
+
+      <button type="submit" class="btn btn--tickets signup__go contact__go">Start email</button>
+      <p class="signup__fine">Opens your email app with your message ready to send to <a href="mailto:contact@nightfallpresents.com">contact@nightfallpresents.com</a>.</p>
+      <p class="contact__sent" id="contact-sent" role="status" hidden>Email app didn't open? Send it to <a href="mailto:contact@nightfallpresents.com">contact@nightfallpresents.com</a>.</p>
+    </form>
+  </section>
+
+  <a class="btn btn--tickets sub__back" href="#">See the dates</a>
+  </div>
+</main>
+
+<dialog class="card" id="menu" aria-label="Menu">
+  <button type="button" class="card__close" id="menu-close" aria-label="Close menu"></button>
+  <nav aria-label="Pages">
+    <a href="#" data-view="" style="--i:0"><span>Dates</span></a>
+    <a href="#faq" data-view="faq" style="--i:1"><span>FAQ</span></a>
+    <a href="#contact" data-view="contact" style="--i:2"><span>Contact</span></a>
+  </nav>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   EDIT HERE
+   One line per night. Fill in what you have; leave the rest as "".
+
+   posh      That night's Posh link. Tickets and VIP tables both open it.
+   tables    Only if tables live on a different link.
+   status    "" for normal, "low" for an ALMOST GONE stamp,
+             "soldout" for a SOLD OUT stamp (the Tickets button switches off).
+   tablesOut true once tables are gone.
+
+   A night is crossed off by itself at 6 AM the next morning.
+   ============================================================ */
+const NIGHTS = {
+  "2026-10-30": { posh: "", tables: "", status: "", tablesOut: false },
+  "2026-10-31": { posh: "", tables: "", status: "", tablesOut: false },
+  "2026-11-20": { posh: "", tables: "", status: "", tablesOut: false },
+  "2026-11-25": { posh: "", tables: "", status: "", tablesOut: false },
+  "2026-12-04": { posh: "", tables: "", status: "", tablesOut: false },
+  "2026-12-12": { posh: "", tables: "", status: "", tablesOut: false }
+};
+const TEXT_ALERTS = "https://marketing.nightfallpresents.com/p/vxfm0noj";   // backup: the hosted signup page
+/* Where the popup sends phone numbers. This is your own server function that holds the
+   Cymbal API key (see night-shift-signup.mjs). Leave "" until it is deployed; until then the
+   popup hands people to the signup page above. Never put the API key in this file. */
+const SIGNUP_ENDPOINT = "/api/night-shift-signup";
+const TIME_ZONE = "America/New_York";   // decides when a night is over
+/* ====================== END OF EDIT ======================== */
+
+(function () {
+  "use strict";
+  function link(u) { return typeof u === "string" && /^https?:\/\//i.test(u.trim()) ? u.trim() : ""; }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  var toastEl = document.getElementById("toast"), timer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("is-on");
+    clearTimeout(timer);
+    timer = setTimeout(function () { toastEl.classList.remove("is-on"); }, 3600);
+  }
+  // a link when there is one; otherwise a button that says why not
+  function wire(a, href, label, msg) {
+    a.setAttribute("aria-label", label);
+    if (href) { a.href = href; a.rel = "noopener"; return; }
+    a.setAttribute("role", "button");
+    a.tabIndex = 0;
+    function notYet(e) {
+      if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      toast(msg);
+    }
+    a.addEventListener("click", notYet);
+    a.addEventListener("keydown", notYet);
+  }
+  // a night out ends at 6 AM, so last night still counts until then
+  function today() {
+    var out = {};
+    try {
+      new Intl.DateTimeFormat("en-US", { timeZone: TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" })
+        .formatToParts(new Date(Date.now() - 6 * 3600 * 1000)).forEach(function (p) { out[p.type] = p.value; });
+      return out.year + "-" + out.month + "-" + out.day;
+    } catch (e) { return "0000-00-00"; }
+  }
+  var now = today();
+
+  document.querySelectorAll(".night").forEach(function (li) {
+    var date = li.getAttribute("data-date"), cfg = NIGHTS[date] || {};
+    var night = li.querySelector(".night__strip").alt;
+    var go = li.querySelector(".night__go");
+    var btns = go.querySelectorAll(".btn");
+
+    if (date < now) {                                   // over: struck through, nothing to buy
+      li.classList.add("is-past");
+      go.replaceWith(el("p", "night__gone", "This night has passed."));
+      return;
+    }
+
+    var tickets = link(cfg.posh), tables = link(cfg.tables) || tickets;
+    if (cfg.status === "soldout") {
+      li.classList.add("is-out");
+      var off = el("span", btns[0].className + " is-off", "Sold out");
+      off.style.cssText = btns[0].style.cssText;
+      btns[0].replaceWith(off);
+      li.querySelector(".night__date").appendChild(el("span", "stamp", "Sold out"));
+    } else {
+      wire(btns[0], tickets, "Tickets for " + night, "Tickets for " + night + " are not on sale yet.");
+      if (cfg.status === "low") li.querySelector(".night__date").appendChild(el("span", "stamp stamp--low", "Almost gone"));
+    }
+    if (cfg.tablesOut) btns[1].replaceWith(el("span", btns[1].className + " is-off", "No tables"));
+    else wire(btns[1], tables, "VIP tables for " + night, "VIP tables for " + night + " are not on sale yet.");
+  });
+
+  /* ---------- text alerts popup ----------
+     Drops in once a few seconds after the page settles. Closing it keeps it away
+     for a week; signing up keeps it away for good. Always reachable from the menu. */
+  var signup = document.getElementById("signup");
+  var KEY = "ns-signup", WEEK = 7 * 864e5;
+  function remember(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function due() {
+    var v = null;
+    try { v = localStorage.getItem(KEY); } catch (e) {}
+    if (v === "done") return false;
+    return !v || Date.now() - (+v) > WEEK;
+  }
+  function openSignup() {
+    if (!signup || !signup.showModal || signup.open) return;
+    if (document.querySelector("dialog[open]")) return;
+    signup.showModal();
+    signup.focus();                                  // no focus ring on the X until someone tabs
+  }
+  window.nsOpenSignup = openSignup;
+
+  (function () {                                   // contact form: hands off to the visitor's email app
+    var cf = document.getElementById("contact-form");
+    if (!cf) return;
+    var TO = "contact@nightfallpresents.com";
+    var cErr = document.getElementById("contact-error"), sent = document.getElementById("contact-sent");
+    var cName = document.getElementById("contact-name"), cMsg = document.getElementById("contact-msg");
+    function bad(el, msg) {
+      el.classList.add("is-bad");
+      cErr.textContent = msg; cErr.hidden = false;
+      el.parentNode.insertBefore(cErr, el.nextSibling);
+      el.focus();
+    }
+    [cName, cMsg].forEach(function (el) { el.addEventListener("input", function () { el.classList.remove("is-bad"); cErr.hidden = true; }); });
+    cf.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = cName.value.replace(/\s+/g, " ").trim(), msg = cMsg.value.trim();
+      var topic = document.getElementById("contact-topic").value, night = document.getElementById("contact-night").value;
+      if (name.length < 2) return bad(cName, "Enter your name.");
+      if (msg.length < 2) return bad(cMsg, "Write a message.");
+      var subject = "Night Shift: " + topic + (night ? " (" + night + ")" : "");
+      var body = msg + "\n\n- " + name;
+      var href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      try { window.location.href = href; } catch (x) {}
+      sent.querySelector("a").href = href;
+      sent.hidden = false;
+      sent.previousElementSibling.hidden = true;
+    });
+  })();
+
+  if (signup) {
+    var form = document.getElementById("signup-form"), phone = document.getElementById("signup-phone");
+    var cc = document.getElementById("signup-cc"), err = document.getElementById("signup-error");
+    var go = document.getElementById("signup-go"), field = form.querySelector(".signup__field");
+    var done = document.getElementById("signup-done"), handoff = document.getElementById("signup-handoff");
+    var endpoint = (/^\/[\w\/-]+$/.test(SIGNUP_ENDPOINT) ? SIGNUP_ENDPOINT : link(SIGNUP_ENDPOINT)), backup = link(TEXT_ALERTS);
+    if (backup) document.getElementById("signup-handoff-go").href = backup;
+
+    function show(panel) {
+      [form, done, handoff].forEach(function (p) { p.hidden = p !== panel; });
+      var h = panel.querySelector("h2"); if (h && panel !== form) h.focus();
+    }
+    var nameIn = document.getElementById("signup-name");
+    function fail(msg, which) {
+      var bad = which === "name" ? nameIn : field, input = which === "name" ? nameIn : phone;
+      err.textContent = msg; err.hidden = false;
+      bad.classList.add("is-bad"); input.setAttribute("aria-invalid", "true");
+      // keep the message right under the field it is about
+      (which === "name" ? nameIn : field).insertAdjacentElement("afterend", err);
+      input.focus();
+    }
+    function clearFail() {
+      err.hidden = true;
+      [field, nameIn].forEach(function (n) { n.classList.remove("is-bad"); });
+      [phone, nameIn].forEach(function (n) { n.removeAttribute("aria-invalid"); });
+    }
+    nameIn.addEventListener("input", clearFail);
+    // shape a typed number into +<country><number>, or "" if it can't be a real number
+    function e164() {
+      var code = cc.value, digits = phone.value.replace(/\D/g, "");
+      if (code === "1") {
+        if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+        if (digits.length !== 10 || /^[01]/.test(digits)) return "";
+      } else {
+        digits = digits.replace(/^0+/, "");
+        if (digits.length < 6 || digits.length > 14) return "";
+      }
+      return "+" + code + digits;
+    }
+    // (614) 555-0123 as they type, for US and Canada
+    phone.addEventListener("input", function () {
+      clearFail();
+      if (cc.value !== "1") return;
+      var d = phone.value.replace(/\D/g, "");
+      if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+      d = d.slice(0, 10);
+      phone.value = d.length > 6 ? "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6)
+                  : d.length > 3 ? "(" + d.slice(0, 3) + ") " + d.slice(3) : d;
+    });
+    function placeholder() { phone.placeholder = cc.value === "1" ? "(614) 555-0123" : "Number"; }
+    cc.addEventListener("change", function () { clearFail(); placeholder(); });
+    placeholder();
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (form.elements.company.value) { show(done); return; }          // a bot filled the hidden field
+      var name = nameIn.value.replace(/\s+/g, " ").trim();
+      if (name.length < 2) { fail("Enter your name.", "name"); return; }
+      var number = e164();
+      if (!number) { fail("Enter a full phone number, like (614) 555-0123.", "phone"); return; }
+      if (!endpoint) { show(handoff); return; }                         // not connected yet: send them to the signup page
+      go.disabled = true; go.textContent = "Sending";
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, phone: number, source: "night-shift-site" })
+      }).then(function (r) {
+        if (!r.ok) { var x = new Error("signup"); x.status = r.status; throw x; }
+        signup.dataset.done = "1"; remember("done"); show(done);
+      }).catch(function (x) {
+        if (x && x.status && x.status !== 400 && backup) { show(handoff); return; }   // our side broke or is missing: don't lose the fan, use the signup page
+        fail("That didn't go through. Check your connection and try again.", "phone");
+      }).then(function () { go.disabled = false; go.textContent = "Get texts"; });
+    });
+
+    document.getElementById("signup-x").addEventListener("click", function () { signup.close(); });
+    document.getElementById("signup-back").addEventListener("click", function () { signup.close(); });
+    document.getElementById("signup-handoff-go").addEventListener("click", function () {
+      signup.dataset.done = "1"; remember("done"); setTimeout(function () { signup.close(); }, 150);
+    });
+    signup.addEventListener("click", function (e) { if (e.target === signup) signup.close(); });   // tap outside
+    signup.addEventListener("close", function () {
+      if (signup.dataset.done !== "1") remember(String(Date.now()));
+      if (!form.hidden) return;
+      setTimeout(function () { show(form); }, 300);                     // reopening from the menu starts fresh
+    });
+    var opened = Date.now();
+    nsReady(function () {
+      var wait = Math.max(5500 - (Date.now() - opened), 2500);   // ~5.5s after opening, at least 2.5s after the intro
+      setTimeout(function () { if (due()) openSignup(); }, wait);
+    });
+  }
+
+  // keep every label on one line inside its button, whatever font loads
+  function fit() {
+    document.querySelectorAll(".btn").forEach(function (b) {
+      b.style.fontSize = "";
+      var size = parseFloat(getComputedStyle(b).fontSize), n = 0;
+      while (b.scrollWidth > b.clientWidth + 1 && size > 8 && n++ < 12) { size -= 0.5; b.style.fontSize = size + "px"; }
+    });
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+  /* ---------- menu and pages ---------- */
+  var card = document.getElementById("menu"), reswing = function () {};
+  var VIEWS = { "": ["view-home", "Night Shift"], faq: ["view-faq", "FAQ | Night Shift"], contact: ["view-contact", "Contact | Night Shift"] };
+  function route(firstLoad) {
+    var key = location.hash.replace(/^#/, "");
+    if (!VIEWS.hasOwnProperty(key)) key = "";
+    Object.keys(VIEWS).forEach(function (k) { document.getElementById(VIEWS[k][0]).hidden = k !== key; });
+    document.title = VIEWS[key][1];
+    card.querySelectorAll("nav a").forEach(function (a) {
+      if (a.getAttribute("data-view") === key) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (card.open) card.close();
+    if (!firstLoad) { window.scrollTo(0, 0); reswing(); }
+    fit();
+  }
+  window.addEventListener("hashchange", function () { route(false); });
+  document.documentElement.style.setProperty("--t0", "0.9s");            // wait for the lights on first load
+  nsReady(function () { setTimeout(function () { document.documentElement.style.setProperty("--t0", "0s"); }, 1400); });
+  route(true);
+
+  if (card.showModal) {
+    document.getElementById("menu-btn").addEventListener("click", function () { card.showModal(); });
+    document.getElementById("menu-close").addEventListener("click", function () { card.close(); });
+    card.addEventListener("click", function (e) {
+      var a = e.target.closest("nav a");
+      if (a && a.hasAttribute("data-signup")) { e.preventDefault(); card.close(); setTimeout(openSignup, 60); return; }
+      if (e.target === card || a) card.close();
+    });
+  } else {
+    document.getElementById("menu-btn").addEventListener("click", function () { location.hash = "faq"; });
+  }
+  // one answer open at a time
+  document.querySelectorAll(".sheet details").forEach(function (d) {
+    d.addEventListener("toggle", function () {
+      if (d.open) d.parentNode.querySelectorAll("details[open]").forEach(function (o) { if (o !== d) o.open = false; });
+    });
+  });
+
+  /* ---------- animation ---------- */
+  if (document.documentElement.classList.contains("js")) {
+    // the slips land as they come into view, a beat apart
+    var slips = [].slice.call(document.querySelectorAll(".night"));
+    if ("IntersectionObserver" in window) {
+      var first = true;
+      var io = new IntersectionObserver(function (entries) {
+        var n = 0;
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.style.setProperty("--d", ((first ? 0.95 : 0) + n++ * 0.09).toFixed(2) + "s");
+          en.target.classList.add("is-in");
+          io.unobserve(en.target);
+        });
+        first = false;
+      }, { threshold: 0.18 });
+      slips.forEach(function (el) { io.observe(el); });
+    } else {
+      slips.forEach(function (el) { el.classList.add("is-in"); });
+    }
+
+    // the tag is a pendulum on its punched hole: it drops in, and swings again when
+    // the page is scrolled, the pointer brushes it, or it is flicked
+    var tags = [].slice.call(document.querySelectorAll(".tag")), REST = -1.2, th = -8, om = 0, raf = 0, last = 0;
+    function pose(v) { tags.forEach(function (t) { t.style.transform = v; }); }
+    function shown() { for (var i = 0; i < tags.length; i++) if (tags[i].offsetParent) return tags[i]; return tags[0]; }
+    function swing(now) {
+      var dt = Math.min(0.032, (now - last) / 1000); last = now;
+      om += (-24 * (th - REST) - 1.5 * om) * dt;
+      th += om * dt;
+      if (Math.abs(th - REST) < 0.012 && Math.abs(om) < 0.03) { th = REST; om = 0; raf = 0; pose(""); return; }
+      pose("rotate(" + th.toFixed(3) + "deg)");
+      raf = requestAnimationFrame(swing);
+    }
+    function kick(v) {
+      om = Math.max(-34, Math.min(34, om + v));
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(swing); }
+    }
+    pose("rotate(" + th + "deg)");
+    nsReady(function () { setTimeout(function () { kick(0); }, 520); });
+    reswing = function () { th = -7; om = 0; pose("rotate(" + th + "deg)"); kick(0); };
+
+    var lastY = window.scrollY;
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY, dy = y - lastY; lastY = y;
+      if (shown().getBoundingClientRect().bottom > 0) kick(Math.max(-9, Math.min(9, dy * 0.09)));
+    }, { passive: true });
+    tags.forEach(function (tag) {
+      tag.addEventListener("pointermove", function (e) {
+        if (e.pointerType === "mouse" && Math.abs(e.movementX) > 2) kick(e.movementX * 0.05);
+      });
+      tag.addEventListener("pointerdown", function (e) {
+        var r = tag.getBoundingClientRect();
+        kick((e.clientX < r.left + r.width / 2 ? 1 : -1) * 22);
+      });
+    });
+
+    // now and then the tube overhead dips for an instant
+    var lights = document.getElementById("lights");
+    (function idle() {
+      setTimeout(function () {
+        if (!document.hidden) {
+          lights.classList.remove("is-blink");
+          void lights.offsetWidth;
+          lights.classList.add("is-blink");
+        }
+        idle();
+      }, 9000 + Math.random() * 14000);
+    })();
+  }
+
+  var raf2;
+  window.addEventListener("resize", function () { cancelAnimationFrame(raf2); raf2 = requestAnimationFrame(fit); });
+})();
+</script>
+
+<script>
+/* clock in */
+(function () {
+  "use strict";
+  var root = document.documentElement, box = document.getElementById("clockin");
+  if (!root.classList.contains("intro-on") || !box) return;
+  var now = new Date(), date = "", time = "";
+  try {
+    date = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).replace(",", "").toUpperCase();
+    time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toUpperCase();
+  } catch (e) {}
+  var dp = date.split(" "), dEl = box.querySelector(".clockin__date");
+  [dp[0] || "", dp.slice(1).join(" ")].forEach(function (txt) { var sp = document.createElement("span"); sp.textContent = txt; dEl.appendChild(sp); });
+  var m = /^(.*?)\s*(AM|PM)$/.exec(time), t = box.querySelector(".clockin__time");
+  if (m) { t.textContent = m[1]; var ap = document.createElement("small"); ap.textContent = m[2]; t.appendChild(ap); }
+  else t.textContent = time;
+
+  var timers = [], over = false;
+  function finish() {
+    if (over) return;
+    over = true;
+    timers.forEach(clearTimeout);
+    box.classList.add("is-punch", "is-out");
+    root.classList.remove("intro");                          // the room's lights strike on underneath
+    document.dispatchEvent(new Event("ns:intro-done"));
+    setTimeout(function () { root.classList.remove("intro-on"); }, 480);
+  }
+  timers.push(setTimeout(function () {
+    box.classList.add("is-punch");
+    try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+  }, 1150));
+  timers.push(setTimeout(finish, 2450));
+  box.addEventListener("pointerdown", finish);
+  window.addEventListener("keydown", finish, { once: true });
+})();
+</script>
+</body>
+</html>
